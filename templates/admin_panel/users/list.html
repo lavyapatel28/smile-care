@@ -1,0 +1,85 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Manage Patients - Admin{% endblock %}
+{% block page_heading %}Patients{% endblock %}
+{% block breadcrumb %}Manage Patients / Users{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">All Patients <span class="badge bg-primary ms-2">{{ users.count }}</span></h5>
+</div>
+
+<!-- Search -->
+<div class="admin-table-card mb-4">
+    <div class="p-3">
+        <form method="get" class="d-flex gap-2">
+            <input type="text" name="search" value="{{ search_query }}" class="form-control" placeholder="Search by name, username, or email...">
+            <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-search me-1"></i>Search
+            </button>
+            {% if search_query %}
+            <a href="{% url 'admin_users' %}" class="btn btn-outline-secondary">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<!-- Users Table -->
+<div class="admin-table-card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-3">#</th>
+                    <th>Patient</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Appointments</th>
+                    <th>Joined On</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patient in users %}
+                <tr>
+                    <td class="ps-3 text-muted">{{ forloop.counter }}</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="user-avatar-sm" style="width:36px;height:36px;font-size:13px">
+                                {{ patient.first_name|first|default:patient.username|first|upper }}
+                            </div>
+                            <div>
+                                <div class="fw-medium">{{ patient.get_full_name|default:patient.username }}</div>
+                                <small class="text-muted">Patient</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td><code>{{ patient.username }}</code></td>
+                    <td>{{ patient.email }}</td>
+                    <td>
+                        <a href="{% url 'admin_appointments' %}?search={{ patient.email }}" class="badge bg-primary text-decoration-none">
+                            {{ patient.appointment_count }} appointments
+                        </a>
+                    </td>
+                    <td><small class="text-muted">{{ patient.date_joined|date:"d M Y" }}</small></td>
+                    <td>
+                        {% if patient.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-5">
+                        <i class="bi bi-people display-4 text-muted d-block mb-2"></i>
+                        <span class="text-muted">No patients registered yet</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

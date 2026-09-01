@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - SmileCare Dental Hospital{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-bg-shapes">
+        <div class="auth-shape auth-shape-1"></div>
+        <div class="auth-shape auth-shape-2"></div>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100 py-5">
+            <div class="col-lg-7 col-md-9">
+                <div class="auth-card">
+                    <!-- Logo -->
+                    <div class="text-center mb-4">
+                        <div class="auth-logo mb-3">
+                            <i class="bi bi-hospital-fill"></i>
+                        </div>
+                        <h2 class="fw-bold">Create Your Account</h2>
+                        <p class="text-muted">Join SmileCare and manage your dental appointments with ease.</p>
+                    </div>
+
+                    {% if next %}
+                    <div class="alert alert-primary border-0 shadow-sm rounded-3 mb-4 d-flex align-items-center gap-3">
+                        <i class="bi bi-calendar-check-fill fs-4 text-primary"></i>
+                        <div>
+                            <strong>Appointment Book karne ke liye:</strong><br>
+                            Kripya pehle apna account banayein (Register karein). Registration ke baad aap direct Appointment Booking page par redirect ho jayenge.
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <form method="post" id="registerForm" novalidate>
+                        {% csrf_token %}
+                        {% if next %}
+                        <input type="hidden" name="next" value="{{ next }}">
+                        {% endif %}
+                        <div class="row g-3">
+                            <!-- First Name -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium" for="id_first_name">
+                                    <i class="bi bi-person me-1 text-primary"></i>First Name
+                                </label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.first_name.errors|join:", " }}</div>
+                                {% endif %}
+                            </div>
+                            <!-- Last Name -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium" for="id_last_name">
+                                    <i class="bi bi-person me-1 text-primary"></i>Last Name
+                                </label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.last_name.errors|join:", " }}</div>
+                                {% endif %}
+                            </div>
+                            <!-- Username -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium" for="id_username">
+                                    <i class="bi bi-at me-1 text-primary"></i>Username
+                                </label>
+                                {{ form.username }}
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.username.errors|join:", " }}</div>
+                                {% endif %}
+                            </div>
+                            <!-- Phone -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium" for="id_phone">
+                                    <i class="bi bi-telephone me-1 text-primary"></i>Phone Number
+                                </label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.phone.errors|join:", " }}</div>
+                                {% endif %}
+                            </div>
+                            <!-- Email -->
+                            <div class="col-12">
+                                <label class="form-label fw-medium" for="id_email">
+                                    <i class="bi bi-envelope me-1 text-primary"></i>Email Address
+                                </label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.email.errors|join:", " }}</div>
+                                {% endif %}
+                            </div>
+                            <!-- Password -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium" for="id_password1">
+                                    <i class="bi bi-lock me-1 text-primary"></i>Password
+                                </label>
+                                <div class="input-group">
+                                    {{ form.password1 }}
+                                    <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('id_password1', this)" tabindex="-1">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                {% if form.password1.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.password1.errors|join:", " }}</div>
+                                {% endif %}
+                                <div class="form-text">{{ form.password1.help_text }}</div>
+                            </div>
+                            <!-- Confirm Password -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium" for="id_password2">
+                                    <i class="bi bi-lock-fill me-1 text-primary"></i>Confirm Password
+                                </label>
+                                <div class="input-group">
+                                    {{ form.password2 }}
+                                    <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('id_password2', this)" tabindex="-1">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                {% if form.password2.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.password2.errors|join:", " }}</div>
+                                {% endif %}
+                            </div>
+                            <!-- Non-field errors -->
+                            {% if form.non_field_errors %}
+                            <div class="col-12">
+                                <div class="alert alert-danger">{{ form.non_field_errors|join:", " }}</div>
+                            </div>
+                            {% endif %}
+                            <!-- Submit -->
+                            <div class="col-12 mt-2">
+                                <button type="submit" class="btn btn-primary w-100 btn-lg fw-semibold" id="registerBtn">
+                                    <i class="bi bi-person-plus me-2"></i>Create Account
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <hr class="my-4">
+                    <p class="text-center text-muted mb-0">
+                        Already have an account?
+                        <a href="{% url 'login' %}{% if next %}?next={{ next }}{% endif %}" class="text-primary fw-semibold text-decoration-none">Login here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePassword(fieldId, btn) {
+    const field = document.getElementById(fieldId);
+    const icon = btn.querySelector('i');
+    if (field.type === 'password') {
+        field.type = 'text';
+        icon.className = 'bi bi-eye-slash';
+    } else {
+        field.type = 'password';
+        icon.className = 'bi bi-eye';
+    }
+}
+</script>
+{% endblock %}

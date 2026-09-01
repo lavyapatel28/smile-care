@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Appointment {{ appointment.appointment_id }} - SmileCare Dental{% endblock %}
+
+{% block content %}
+<div class="page-hero-sm">
+    <div class="container">
+        <div class="row align-items-center py-4">
+            <div class="col">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-1">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-white-50">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}" class="text-white-50">Dashboard</a></li>
+                        <li class="breadcrumb-item text-white active">{{ appointment.appointment_id }}</li>
+                    </ol>
+                </nav>
+                <h1 class="text-white fw-bold mb-0">Appointment Details</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="detail-card">
+                    <!-- Header -->
+                    <div class="detail-card-header d-flex justify-content-between align-items-start flex-wrap gap-2">
+                        <div>
+                            <div class="text-muted small mb-1">Appointment ID</div>
+                            <h4 class="fw-bold text-primary mb-0">{{ appointment.appointment_id }}</h4>
+                        </div>
+                        <span class="badge {{ appointment.get_status_badge_class }} fs-6 px-4 py-2">
+                            {{ appointment.get_status_display }}
+                        </span>
+                    </div>
+
+                    <!-- Doctor Info -->
+                    <div class="detail-section">
+                        <h6 class="detail-section-title"><i class="bi bi-person-badge-fill text-primary me-2"></i>Doctor Information</h6>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="detail-field">
+                                    <div class="detail-label">Doctor Name</div>
+                                    <div class="detail-value fw-semibold">Dr. {{ appointment.doctor.name }}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="detail-field">
+                                    <div class="detail-label">Specialization</div>
+                                    <div class="detail-value">{{ appointment.doctor.specialization }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Appointment Info -->
+                    <div class="detail-section">
+                        <h6 class="detail-section-title"><i class="bi bi-calendar-fill text-primary me-2"></i>Appointment Schedule</h6>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="detail-field">
+                                    <div class="detail-label">Date</div>
+                                    <div class="detail-value fw-semibold">{{ appointment.appointment_date|date:"l, d F Y" }}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="detail-field">
+                                    <div class="detail-label">Time</div>
+                                    <div class="detail-value fw-semibold">{{ appointment.appointment_time|time:"g:i A" }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Patient Info -->
+                    <div class="detail-section">
+                        <h6 class="detail-section-title"><i class="bi bi-person-fill text-primary me-2"></i>Patient Information</h6>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="detail-field">
+                                    <div class="detail-label">Full Name</div>
+                                    <div class="detail-value">{{ appointment.patient_name }}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="detail-field">
+                                    <div class="detail-label">Email</div>
+                                    <div class="detail-value">{{ appointment.patient_email }}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="detail-field">
+                                    <div class="detail-label">Phone</div>
+                                    <div class="detail-value">{{ appointment.patient_phone }}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="detail-field">
+                                    <div class="detail-label">Age</div>
+                                    <div class="detail-value">{{ appointment.patient_age }} years</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="detail-field">
+                                    <div class="detail-label">Gender</div>
+                                    <div class="detail-value">{{ appointment.patient_gender }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reason -->
+                    <div class="detail-section">
+                        <h6 class="detail-section-title"><i class="bi bi-chat-text-fill text-primary me-2"></i>Reason for Visit</h6>
+                        <div class="detail-reason-box">{{ appointment.reason }}</div>
+                    </div>
+
+                    <!-- Admin Notes -->
+                    {% if appointment.admin_notes %}
+                    <div class="detail-section">
+                        <h6 class="detail-section-title"><i class="bi bi-clipboard-check text-success me-2"></i>Doctor/Admin Notes</h6>
+                        <div class="detail-notes-box">{{ appointment.admin_notes }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Action Sidebar -->
+            <div class="col-lg-4">
+                <div class="detail-sidebar">
+                    <h6 class="fw-semibold mb-3">Actions</h6>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                        </a>
+                        {% if appointment.can_edit %}
+                        <a href="{% url 'edit_appointment' appointment.appointment_id %}" class="btn btn-warning">
+                            <i class="bi bi-pencil-fill me-2"></i>Edit Appointment
+                        </a>
+                        {% endif %}
+                        {% if appointment.can_cancel %}
+                        <a href="{% url 'cancel_appointment' appointment.appointment_id %}" class="btn btn-danger">
+                            <i class="bi bi-x-circle-fill me-2"></i>Cancel Appointment
+                        </a>
+                        {% endif %}
+                        <a href="{% url 'book_appointment' %}" class="btn btn-primary">
+                            <i class="bi bi-calendar-plus me-2"></i>Book New Appointment
+                        </a>
+                    </div>
+
+                    <hr>
+                    <div class="timeline mt-3">
+                        <h6 class="fw-semibold mb-3">Timeline</h6>
+                        <div class="timeline-item">
+                            <div class="timeline-dot bg-primary"></div>
+                            <div>
+                                <div class="fw-medium small">Appointment Booked</div>
+                                <div class="text-muted" style="font-size:12px">{{ appointment.created_at|date:"d M Y, g:i A" }}</div>
+                            </div>
+                        </div>
+                        {% if appointment.updated_at != appointment.created_at %}
+                        <div class="timeline-item">
+                            <div class="timeline-dot bg-success"></div>
+                            <div>
+                                <div class="fw-medium small">Last Updated</div>
+                                <div class="text-muted" style="font-size:12px">{{ appointment.updated_at|date:"d M Y, g:i A" }}</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,205 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Appointment {{ appointment.appointment_id }} - Admin{% endblock %}
+{% block page_heading %}Appointment Detail{% endblock %}
+{% block breadcrumb %}Appointments / {{ appointment.appointment_id }}{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Detail Card -->
+    <div class="col-lg-7">
+        <div class="admin-table-card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small">Appointment ID</span>
+                    <div class="fw-bold text-primary">{{ appointment.appointment_id }}</div>
+                </div>
+                <span class="badge {{ appointment.get_status_badge_class }} fs-6 px-3 py-2">
+                    {{ appointment.get_status_display }}
+                </span>
+            </div>
+            <div class="p-4">
+                <!-- Doctor Info -->
+                <h6 class="text-muted small text-uppercase fw-semibold mb-3">Doctor Information</h6>
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6">
+                        <div class="detail-label">Doctor Name</div>
+                        <div class="fw-semibold">Dr. {{ appointment.doctor.name }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="detail-label">Specialization</div>
+                        <div>{{ appointment.doctor.specialization }}</div>
+                    </div>
+                </div>
+
+                <!-- Schedule Info -->
+                <h6 class="text-muted small text-uppercase fw-semibold mb-3">Schedule</h6>
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6">
+                        <div class="detail-label">Date</div>
+                        <div class="fw-semibold">{{ appointment.appointment_date|date:"l, d F Y" }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="detail-label">Time</div>
+                        <div class="fw-semibold">{{ appointment.appointment_time|time:"g:i A" }}</div>
+                    </div>
+                </div>
+
+                <!-- Patient Info -->
+                <h6 class="text-muted small text-uppercase fw-semibold mb-3">Patient Information</h6>
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6">
+                        <div class="detail-label">Full Name</div>
+                        <div>{{ appointment.patient_name }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="detail-label">Email</div>
+                        <div>{{ appointment.patient_email }}</div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="detail-label">Phone</div>
+                        <div>{{ appointment.patient_phone }}</div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="detail-label">Age</div>
+                        <div>{{ appointment.patient_age }} years</div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="detail-label">Gender</div>
+                        <div>{{ appointment.patient_gender }}</div>
+                    </div>
+                </div>
+
+                <!-- Reason -->
+                <h6 class="text-muted small text-uppercase fw-semibold mb-2">Reason for Visit</h6>
+                <div class="p-3 bg-light rounded-3 mb-4">{{ appointment.reason }}</div>
+
+                <!-- Admin Notes -->
+                {% if appointment.admin_notes %}
+                <h6 class="text-muted small text-uppercase fw-semibold mb-2">Admin Notes</h6>
+                <div class="p-3 rounded-3 mb-0" style="background:#f0fdf4;border:1px solid #bbf7d0">{{ appointment.admin_notes }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Reschedule Form -->
+        <div class="admin-table-card">
+            <div class="card-header">
+                <i class="bi bi-calendar-week text-primary me-2"></i>Reschedule Appointment
+            </div>
+            <div class="p-4">
+                <form method="post" id="rescheduleForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="reschedule">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-medium">New Date</label>
+                            <input type="date" name="new_date" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-medium">New Time</label>
+                            <input type="time" name="new_time" class="form-control" required>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-calendar-week me-1"></i>Reschedule
+                            </button>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-medium">Notes for Patient</label>
+                            <textarea name="admin_notes" class="form-control" rows="2" placeholder="Reason for rescheduling..."></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Panel -->
+    <div class="col-lg-5">
+        <div class="admin-table-card mb-4">
+            <div class="card-header">
+                <i class="bi bi-gear text-primary me-2"></i>Manage Status
+            </div>
+            <div class="p-4">
+                <!-- Quick Status Buttons -->
+                <div class="mb-3">
+                    <h6 class="fw-semibold small text-uppercase text-muted mb-3">Quick Actions</h6>
+                    <div class="d-grid gap-2">
+                        {% if appointment.status == 'pending' %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="approve">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-check-circle-fill me-2"></i>Approve Appointment
+                            </button>
+                        </form>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="reject">
+                            <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Reject this appointment?')">
+                                <i class="bi bi-x-circle-fill me-2"></i>Reject Appointment
+                            </button>
+                        </form>
+                        {% endif %}
+
+                        {% if appointment.status == 'approved' %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="complete">
+                            <button type="submit" class="btn btn-info w-100 text-white">
+                                <i class="bi bi-check2-all me-2"></i>Mark as Completed
+                            </button>
+                        </form>
+                        {% endif %}
+
+                        {% if appointment.status in 'pending,approved' %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="cancel">
+                            <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('Cancel this appointment?')">
+                                <i class="bi bi-slash-circle me-2"></i>Cancel Appointment
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <hr>
+
+                <!-- Notes Form -->
+                <h6 class="fw-semibold small text-uppercase text-muted mb-3">Add Admin Note</h6>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="note">
+                    <textarea name="admin_notes" class="form-control mb-2" rows="3"
+                        placeholder="Add a note for this appointment...">{{ appointment.admin_notes }}</textarea>
+                    <a href="{% url 'admin_appointments' %}" class="btn btn-outline-secondary me-2">
+                        <i class="bi bi-arrow-left me-1"></i>Back
+                    </a>
+                </form>
+            </div>
+        </div>
+
+        <!-- Meta Info -->
+        <div class="admin-table-card">
+            <div class="card-header">
+                <i class="bi bi-info-circle text-primary me-2"></i>Meta Info
+            </div>
+            <div class="p-3">
+                <div class="meta-row"><span class="text-muted small">Booked On</span><span class="small fw-medium">{{ appointment.created_at|date:"d M Y, g:i A" }}</span></div>
+                <div class="meta-row"><span class="text-muted small">Last Updated</span><span class="small fw-medium">{{ appointment.updated_at|date:"d M Y, g:i A" }}</span></div>
+                <div class="meta-row"><span class="text-muted small">User Account</span><span class="small fw-medium">{{ appointment.user.username|default:"Guest" }}</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.detail-label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: #94a3b8; margin-bottom: 2px; }
+.meta-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
+.meta-row:last-child { border-bottom: none; }
+</style>
+{% endblock %}

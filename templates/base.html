@@ -1,0 +1,189 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SmileCare Dental Hospital - Expert dental care with modern technology. Book appointments online.">
+    <title>{% block title %}SmileCare Dental Hospital{% endblock %}</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNavbar">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
+                <div class="brand-icon">
+                    <i class="bi bi-hospital-fill"></i>
+                </div>
+                <div>
+                    <span class="brand-name">SmileCare</span>
+                    <span class="brand-sub d-block">Dental Hospital</span>
+                </div>
+            </a>
+
+            <!-- Mobile Toggle -->
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Nav Links -->
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav mx-auto gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'doctors' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'doctors_list' %}">Doctors</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}#contact">Contact</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    {% if user.is_authenticated %}
+                        {% if user.is_staff %}
+                            <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-speedometer2 me-1"></i>Admin Panel
+                            </a>
+                        {% endif %}
+                        <div class="dropdown">
+                            <button class="btn btn-primary btn-sm dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
+                                <div class="user-avatar-sm">{{ user.first_name|first|default:user.username|first|upper }}</div>
+                                {{ user.first_name|default:user.username }}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3">
+                                {% if user.is_staff %}
+                                    <li><a class="dropdown-item fw-bold text-primary" href="{% url 'admin_dashboard' %}"><i class="bi bi-speedometer2 me-2"></i>Admin Dashboard</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="{% url 'dashboard' %}"><i class="bi bi-grid me-2 text-primary"></i>My Appointments</a></li>
+                                <li><a class="dropdown-item" href="{% url 'book_appointment' %}"><i class="bi bi-calendar-plus me-2 text-success"></i>Book Appointment</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                            </ul>
+                        </div>
+                        <a href="{% url 'book_appointment' %}" class="btn btn-accent btn-sm ms-1">
+                            <i class="bi bi-calendar-check me-1"></i>Book Now
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm">Login</a>
+                        <a href="{% url 'register' %}" class="btn btn-primary btn-sm">Register</a>
+                        <a href="{% url 'register' %}?next={% url 'book_appointment' %}" class="btn btn-accent btn-sm ms-1">
+                            <i class="bi bi-calendar-check me-1"></i>Book Now
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== MESSAGES ===== -->
+    {% if messages %}
+    <div class="messages-container" id="messagesContainer">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm border-0" role="alert">
+            <div class="d-flex align-items-center gap-2">
+                {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill text-success fs-5"></i>
+                {% elif message.tags == 'danger' %}<i class="bi bi-exclamation-circle-fill text-danger fs-5"></i>
+                {% elif message.tags == 'warning' %}<i class="bi bi-exclamation-triangle-fill text-warning fs-5"></i>
+                {% else %}<i class="bi bi-info-circle-fill text-info fs-5"></i>{% endif %}
+                <span>{{ message }}</span>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Brand -->
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="brand-icon"><i class="bi bi-hospital-fill"></i></div>
+                        <div>
+                            <span class="text-white fw-bold fs-5">SmileCare</span>
+                            <span class="d-block text-white-50 small">Dental Hospital</span>
+                        </div>
+                    </div>
+                    <p class="text-white-50 small">Providing world-class dental care with a gentle touch. Your smile is our passion and our purpose.</p>
+                    <div class="social-links mt-3">
+                        <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="social-link"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-4">
+                    <h6 class="text-white fw-semibold mb-3">Quick Links</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'home' %}#about">About Us</a></li>
+                        <li><a href="{% url 'home' %}#services">Services</a></li>
+                        <li><a href="{% url 'doctors_list' %}">Our Doctors</a></li>
+                        <li><a href="{% url 'home' %}#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <!-- Services -->
+                <div class="col-lg-3 col-md-4">
+                    <h6 class="text-white fw-semibold mb-3">Our Services</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="#">Teeth Cleaning</a></li>
+                        <li><a href="#">Teeth Whitening</a></li>
+                        <li><a href="#">Dental Implants</a></li>
+                        <li><a href="#">Orthodontics</a></li>
+                        <li><a href="#">Root Canal</a></li>
+                    </ul>
+                </div>
+                <!-- Contact -->
+                <div class="col-lg-3 col-md-4">
+                    <h6 class="text-white fw-semibold mb-3">Contact Info</h6>
+                    <ul class="list-unstyled footer-contact">
+                        <li><i class="bi bi-geo-alt-fill"></i> 123 Dental Street, Health City, HC 400001</li>
+                        <li><i class="bi bi-telephone-fill"></i> +91 98765 43210</li>
+                        <li><i class="bi bi-envelope-fill"></i> info@smilecaredental.com</li>
+                        <li><i class="bi bi-clock-fill"></i> Mon–Sat: 9:00 AM – 7:00 PM</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-secondary my-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <p class="text-white-50 small mb-0">&copy; 2024 SmileCare Dental Hospital. All rights reserved.</p>
+                <p class="text-white-50 small mb-0">Designed with <i class="bi bi-heart-fill text-danger"></i> for better smiles</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

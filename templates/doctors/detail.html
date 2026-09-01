@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Dr. {{ doctor.name }} - SmileCare Dental{% endblock %}
+
+{% block content %}
+<div class="page-hero-sm">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="py-4">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-white-50">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'doctors_list' %}" class="text-white-50">Doctors</a></li>
+                <li class="breadcrumb-item text-white active">Dr. {{ doctor.name }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="detail-card text-center">
+                    {% if doctor.image %}
+                        <img src="{{ doctor.image.url }}" alt="Dr. {{ doctor.name }}" class="rounded-4 img-fluid mb-3" style="max-height:280px;width:100%;object-fit:cover">
+                    {% else %}
+                        <div class="doctor-img-placeholder mx-auto mb-3" style="width:160px;height:160px;font-size:60px">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                    {% endif %}
+                    <h4 class="fw-bold">Dr. {{ doctor.name }}</h4>
+                    <p class="text-primary fw-medium">{{ doctor.specialization }}</p>
+                    {% if doctor.qualification %}<p class="text-muted small">{{ doctor.qualification }}</p>{% endif %}
+                    <div class="d-flex justify-content-center gap-4 my-3">
+                        <div class="text-center">
+                            <div class="fw-bold fs-5 text-primary">{{ doctor.experience }}+</div>
+                            <div class="text-muted small">Years Exp.</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="fw-bold fs-5 text-success">4.9</div>
+                            <div class="text-muted small">Rating</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="fw-bold fs-5 text-warning">₹{{ doctor.consultation_fee }}</div>
+                            <div class="text-muted small">Fee</div>
+                        </div>
+                    </div>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'book_appointment' %}?doctor={{ doctor.pk }}" class="btn btn-primary w-100 btn-lg">
+                            <i class="bi bi-calendar-plus me-2"></i>Book Appointment
+                        </a>
+                    {% else %}
+                        <a href="{% url 'register' %}?next=/book/%3Fdoctor={{ doctor.pk }}" class="btn btn-primary w-100 btn-lg">
+                            <i class="bi bi-calendar-plus me-2"></i>Book Appointment
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="detail-card mb-4">
+                    <h5 class="fw-bold mb-3">About Dr. {{ doctor.name }}</h5>
+                    <p class="text-muted">{{ doctor.bio|default:"Experienced dental professional committed to providing exceptional care." }}</p>
+                    <div class="row g-3 mt-2">
+                        {% if doctor.phone %}<div class="col-sm-6"><i class="bi bi-telephone text-primary me-2"></i>{{ doctor.phone }}</div>{% endif %}
+                        {% if doctor.email %}<div class="col-sm-6"><i class="bi bi-envelope text-primary me-2"></i>{{ doctor.email }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="detail-card">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-calendar-week text-primary me-2"></i>Available Schedule</h5>
+                    {% if schedules %}
+                    <div class="row g-3">
+                        {% for sched in schedules %}
+                        <div class="col-md-6">
+                            <div class="schedule-display-card">
+                                <div class="fw-semibold">{{ sched.day_of_week }}</div>
+                                <div class="text-primary small">{{ sched.start_time|time:"g:i A" }} – {{ sched.end_time|time:"g:i A" }}</div>
+                                <div class="text-muted small"><i class="bi bi-clock me-1"></i>{{ sched.slot_duration }} min slots</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted">Schedule not yet configured. Please call to confirm availability.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Our Doctors - SmileCare Dental{% endblock %}
+
+{% block content %}
+<div class="page-hero-sm">
+    <div class="container">
+        <div class="row align-items-center py-4">
+            <div class="col">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-1">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-white-50">Home</a></li>
+                        <li class="breadcrumb-item text-white active">Our Doctors</li>
+                    </ol>
+                </nav>
+                <h1 class="text-white fw-bold mb-0">Our Expert Doctors</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <div class="section-badge mx-auto mb-3">Our Team</div>
+            <h2 class="section-title">Meet Our <span class="text-gradient">Specialists</span></h2>
+            <p class="text-muted">Our team of experienced dental professionals is committed to your oral health.</p>
+        </div>
+        <div class="row g-4">
+            {% for doctor in doctors %}
+            <div class="col-lg-4 col-md-6">
+                <div class="doctor-card">
+                    <div class="doctor-img-wrap">
+                        {% if doctor.image %}
+                            <img src="{{ doctor.image.url }}" alt="Dr. {{ doctor.name }}" class="doctor-img">
+                        {% else %}
+                            <div class="doctor-img-placeholder"><i class="bi bi-person-fill"></i></div>
+                        {% endif %}
+                        <div class="doctor-available-badge">
+                            <i class="bi bi-circle-fill text-success me-1" style="font-size:8px"></i>Available
+                        </div>
+                    </div>
+                    <div class="doctor-body">
+                        <h5 class="doctor-name">Dr. {{ doctor.name }}</h5>
+                        <p class="doctor-spec">{{ doctor.specialization }}</p>
+                        {% if doctor.qualification %}
+                            <p class="doctor-qual">{{ doctor.qualification }}</p>
+                        {% endif %}
+                        <div class="doctor-meta d-flex justify-content-between align-items-center mt-2">
+                            <span class="meta-item"><i class="bi bi-briefcase-fill me-1 text-primary"></i>{{ doctor.experience }} yrs exp</span>
+                            <span class="meta-item"><i class="bi bi-star-fill me-1 text-warning"></i>4.9 (200+ reviews)</span>
+                        </div>
+                        {% if doctor.bio %}
+                        <p class="text-muted small mt-2 mb-2">{{ doctor.bio|truncatechars:100 }}</p>
+                        {% endif %}
+                        <!-- Working Days -->
+                        {% with days=doctor.get_working_days %}
+                        {% if days %}
+                        <div class="working-days-wrap mt-2">
+                            {% for day in days %}
+                            <span class="day-chip">{{ day|slice:":3" }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% endwith %}
+                        <div class="doctor-actions mt-3 d-flex gap-2">
+                            <a href="{% url 'doctor_detail' doctor.pk %}" class="btn btn-outline-primary btn-sm flex-fill">View Profile</a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'book_appointment' %}?doctor={{ doctor.pk }}" class="btn btn-primary btn-sm flex-fill">Book Now</a>
+                            {% else %}
+                                <a href="{% url 'register' %}?next=/book/%3Fdoctor={{ doctor.pk }}" class="btn btn-primary btn-sm flex-fill">Book Now</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="bi bi-person-x display-1 text-muted"></i>
+                    <h5 class="mt-3 text-muted">No doctors available yet. Check back soon!</h5>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

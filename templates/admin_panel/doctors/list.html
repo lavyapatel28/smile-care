@@ -1,0 +1,125 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Manage Doctors - Admin{% endblock %}
+{% block page_heading %}Doctors{% endblock %}
+{% block breadcrumb %}Manage Doctors{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">All Doctors <span class="badge bg-primary ms-2">{{ doctors.count }}</span></h5>
+    <a href="{% url 'admin_add_doctor' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-2"></i>Add New Doctor
+    </a>
+</div>
+
+<!-- Search -->
+<div class="admin-table-card mb-4">
+    <div class="p-3">
+        <form method="get" class="d-flex gap-2">
+            <input type="text" name="search" value="{{ search_query }}" class="form-control" placeholder="Search by name or specialization...">
+            <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-search me-1"></i>Search
+            </button>
+            {% if search_query %}
+            <a href="{% url 'admin_doctors' %}" class="btn btn-outline-secondary">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<!-- Doctors Grid -->
+{% if doctors %}
+<div class="row g-4">
+    {% for doctor in doctors %}
+    <div class="col-xl-4 col-md-6">
+        <div class="admin-doctor-card">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                {% if doctor.image %}
+                    <img src="{{ doctor.image.url }}" alt="Dr. {{ doctor.name }}" class="doctor-admin-img">
+                {% else %}
+                    <div class="doctor-admin-avatar">{{ doctor.name|first|upper }}</div>
+                {% endif %}
+                <div>
+                    <div class="fw-semibold">Dr. {{ doctor.name }}</div>
+                    <div class="text-primary small">{{ doctor.specialization }}</div>
+                    {% if doctor.is_available %}
+                        <span class="badge bg-success-soft text-success" style="font-size:10px">
+                            <i class="bi bi-circle-fill me-1" style="font-size:6px"></i>Available
+                        </span>
+                    {% else %}
+                        <span class="badge bg-danger-soft text-danger" style="font-size:10px">Unavailable</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row g-2 mb-3">
+                <div class="col-6">
+                    <div class="doctor-info-chip">
+                        <i class="bi bi-briefcase text-muted me-1"></i>
+                        <small>{{ doctor.experience }} yrs</small>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="doctor-info-chip">
+                        <i class="bi bi-calendar3 text-muted me-1"></i>
+                        <small>{{ doctor.get_working_days|length }} days/wk</small>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="doctor-info-chip">
+                        <i class="bi bi-currency-rupee text-muted me-1"></i>
+                        <small>₹{{ doctor.consultation_fee }} consultation fee</small>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{% url 'admin_edit_doctor' doctor.pk %}" class="btn btn-outline-primary btn-sm flex-fill">
+                    <i class="bi bi-pencil me-1"></i>Edit
+                </a>
+                <a href="{% url 'admin_appointments' %}?search={{ doctor.name }}" class="btn btn-outline-secondary btn-sm flex-fill">
+                    <i class="bi bi-calendar3 me-1"></i>Appointments
+                </a>
+                <a href="{% url 'admin_delete_doctor' doctor.pk %}" class="btn btn-outline-danger btn-sm"
+                   onclick="return confirm('Delete Dr. {{ doctor.name }}? This cannot be undone.')">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="admin-table-card">
+    <div class="text-center py-5">
+        <i class="bi bi-person-x display-3 text-muted"></i>
+        <h5 class="mt-3 text-muted">No Doctors Found</h5>
+        {% if search_query %}
+        <p class="text-muted">No results for "{{ search_query }}"</p>
+        <a href="{% url 'admin_doctors' %}" class="btn btn-outline-primary">Clear Search</a>
+        {% else %}
+        <a href="{% url 'admin_add_doctor' %}" class="btn btn-primary">Add First Doctor</a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.admin-doctor-card {
+    background: white; border-radius: 16px; padding: 20px;
+    border: 1px solid #e2e8f0; transition: box-shadow 0.2s;
+}
+.admin-doctor-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+.doctor-admin-img { width: 54px; height: 54px; border-radius: 50%; object-fit: cover; border: 2px solid #e2e8f0; }
+.doctor-admin-avatar {
+    width: 54px; height: 54px; border-radius: 50%;
+    background: linear-gradient(135deg, #0ea5e9, #0284c7);
+    color: white; display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 700; flex-shrink: 0;
+}
+.doctor-info-chip {
+    background: #f8fafc; border-radius: 8px; padding: 6px 10px;
+    border: 1px solid #e2e8f0; font-size: 12px;
+}
+</style>
+{% endblock %}

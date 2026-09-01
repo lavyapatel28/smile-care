@@ -1,0 +1,520 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}SmileCare Dental Hospital - Expert Dental Care{% endblock %}
+
+{% block content %}
+
+<!-- ===== HERO SECTION ===== -->
+<section class="hero-section" id="home">
+    <div class="hero-bg-shapes">
+        <div class="hero-shape hero-shape-1"></div>
+        <div class="hero-shape hero-shape-2"></div>
+        <div class="hero-shape hero-shape-3"></div>
+    </div>
+    <div class="container">
+        <div class="row align-items-center min-vh-100 py-5">
+            <div class="col-lg-6 hero-content">
+                <div class="hero-badge mb-4" data-aos="fade-up">
+                    <i class="bi bi-award-fill text-warning me-2"></i>
+                    #1 Trusted Dental Clinic in the City
+                </div>
+                <h1 class="hero-title" data-aos="fade-up" data-aos-delay="100">
+                    Your Smile Is Our <span class="text-gradient">Greatest</span> Achievement
+                </h1>
+                <p class="hero-subtitle mt-3" data-aos="fade-up" data-aos-delay="200">
+                    Experience world-class dental care with cutting-edge technology and compassionate professionals. Book your appointment today and take the first step towards a healthier, brighter smile.
+                </p>
+                <div class="hero-actions mt-4 d-flex flex-wrap gap-3" data-aos="fade-up" data-aos-delay="300">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'book_appointment' %}" class="btn btn-primary btn-lg px-4">
+                            <i class="bi bi-calendar-plus me-2"></i>Book Appointment
+                        </a>
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-primary btn-lg px-4">
+                            <i class="bi bi-grid me-2"></i>My Dashboard
+                        </a>
+                    {% else %}
+                        <a href="{% url 'register' %}?next={% url 'book_appointment' %}" class="btn btn-primary btn-lg px-4">
+                            <i class="bi bi-calendar-plus me-2"></i>Book Appointment
+                        </a>
+                        <a href="{% url 'home' %}#about" class="btn btn-outline-primary btn-lg px-4">
+                            <i class="bi bi-play-circle me-2"></i>Learn More
+                        </a>
+                    {% endif %}
+                </div>
+                <!-- Stats Row -->
+                <div class="hero-stats mt-5 d-flex gap-4 flex-wrap" data-aos="fade-up" data-aos-delay="400">
+                    <div class="hero-stat">
+                        <div class="hero-stat-number">15+</div>
+                        <div class="hero-stat-label">Years Experience</div>
+                    </div>
+                    <div class="hero-stat-divider"></div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-number">50k+</div>
+                        <div class="hero-stat-label">Happy Patients</div>
+                    </div>
+                    <div class="hero-stat-divider"></div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-number">25+</div>
+                        <div class="hero-stat-label">Expert Doctors</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Hero Image Card -->
+            <div class="col-lg-6 mt-5 mt-lg-0" data-aos="fade-left" data-aos-delay="200">
+                <div class="hero-visual">
+                    <div class="hero-card-main">
+                        <div class="hero-icon-large">
+                            <i class="bi bi-hospital-fill"></i>
+                        </div>
+                        <h3 class="mt-3 text-white fw-bold">Expert Dental Care</h3>
+                        <p class="text-white-75 small">State-of-the-art equipment for your comfort</p>
+                        <!-- Floating Cards -->
+                        <div class="floating-card floating-card-1">
+                            <i class="bi bi-shield-check-fill text-success"></i>
+                            <div>
+                                <div class="fw-semibold small">Safe & Sterile</div>
+                                <div class="text-muted" style="font-size:11px">100% Guaranteed</div>
+                            </div>
+                        </div>
+                        <div class="floating-card floating-card-2">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <div>
+                                <div class="fw-semibold small">4.9 Rating</div>
+                                <div class="text-muted" style="font-size:11px">2000+ Reviews</div>
+                            </div>
+                        </div>
+                        <div class="floating-card floating-card-3">
+                            <i class="bi bi-clock-fill text-primary"></i>
+                            <div>
+                                <div class="fw-semibold small">Quick Booking</div>
+                                <div class="text-muted" style="font-size:11px">In 2 Minutes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== ABOUT SECTION ===== -->
+<section class="about-section py-5" id="about">
+    <div class="container py-4">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="about-image-grid">
+                    <div class="about-img-card about-img-1">
+                        <i class="bi bi-tooth display-1 text-primary"></i>
+                        <div class="about-img-label">Modern Equipment</div>
+                    </div>
+                    <div class="about-img-card about-img-2">
+                        <i class="bi bi-people-fill display-3 text-white"></i>
+                        <div class="about-img-label-dark">Expert Team</div>
+                    </div>
+                    <div class="about-years-badge">
+                        <span class="years-num">15+</span>
+                        <span class="years-text">Years of<br>Excellence</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="section-badge mb-3">About SmileCare</div>
+                <h2 class="section-title">We Are Committed to Your <span class="text-gradient">Dental Health</span></h2>
+                <p class="text-muted mt-3">
+                    SmileCare Dental Hospital has been serving the community since 2009. Our state-of-the-art facility combines cutting-edge technology with compassionate care to deliver exceptional dental services to patients of all ages.
+                </p>
+                <p class="text-muted">
+                    We believe everyone deserves a healthy, beautiful smile. Our team of experienced dentists and specialists are dedicated to providing personalized care tailored to your unique needs.
+                </p>
+                <div class="about-features mt-4">
+                    <div class="about-feature-item">
+                        <div class="feature-check"><i class="bi bi-check2"></i></div>
+                        <span>Advanced Digital X-Ray Technology</span>
+                    </div>
+                    <div class="about-feature-item">
+                        <div class="feature-check"><i class="bi bi-check2"></i></div>
+                        <span>Painless & Comfortable Procedures</span>
+                    </div>
+                    <div class="about-feature-item">
+                        <div class="feature-check"><i class="bi bi-check2"></i></div>
+                        <span>Flexible Appointment Scheduling</span>
+                    </div>
+                    <div class="about-feature-item">
+                        <div class="feature-check"><i class="bi bi-check2"></i></div>
+                        <span>Emergency Dental Services Available</span>
+                    </div>
+                </div>
+                <a href="{% url 'book_appointment' %}" class="btn btn-primary mt-4">
+                    <i class="bi bi-calendar-plus me-2"></i>Book an Appointment
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== SERVICES SECTION ===== -->
+<section class="services-section py-5" id="services">
+    <div class="container py-4">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <div class="section-badge mx-auto mb-3">Our Services</div>
+            <h2 class="section-title">Comprehensive Dental <span class="text-gradient">Services</span></h2>
+            <p class="text-muted mx-auto" style="max-width:600px">We offer a full range of dental treatments using the latest technology to ensure you receive the best care possible.</p>
+        </div>
+        <div class="row g-4">
+            {% for service in services_list %}
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}00">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="bi {{ service.icon }}"></i>
+                    </div>
+                    <h5 class="service-title">{{ service.name }}</h5>
+                    <p class="service-desc">{{ service.desc }}</p>
+                    <a href="{% url 'book_appointment' %}" class="service-link">
+                        Book Now <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Default services if none in context -->
+            <div class="col-lg-4 col-md-6" data-aos="fade-up">
+                <div class="service-card">
+                    <div class="service-icon"><i class="bi bi-tooth"></i></div>
+                    <h5 class="service-title">General Dentistry</h5>
+                    <p class="service-desc">Comprehensive dental exams, cleanings, fillings, and preventive care for the whole family.</p>
+                    <a href="{% url 'book_appointment' %}" class="service-link">Book Now <i class="bi bi-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="service-card">
+                    <div class="service-icon" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)"><i class="bi bi-stars"></i></div>
+                    <h5 class="service-title">Teeth Whitening</h5>
+                    <p class="service-desc">Professional teeth whitening treatments that deliver dramatic results safely and comfortably.</p>
+                    <a href="{% url 'book_appointment' %}" class="service-link">Book Now <i class="bi bi-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="service-card">
+                    <div class="service-icon" style="background:linear-gradient(135deg,#f59e0b,#ef4444)"><i class="bi bi-bandaid"></i></div>
+                    <h5 class="service-title">Orthodontics</h5>
+                    <p class="service-desc">Traditional braces and clear aligners to straighten teeth and correct bite issues for all ages.</p>
+                    <a href="{% url 'book_appointment' %}" class="service-link">Book Now <i class="bi bi-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="service-card">
+                    <div class="service-icon" style="background:linear-gradient(135deg,#10b981,#059669)"><i class="bi bi-heart-pulse"></i></div>
+                    <h5 class="service-title">Root Canal</h5>
+                    <p class="service-desc">Pain-free root canal therapy to save your natural tooth and relieve severe tooth pain.</p>
+                    <a href="{% url 'book_appointment' %}" class="service-link">Book Now <i class="bi bi-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="service-card">
+                    <div class="service-icon" style="background:linear-gradient(135deg,#ec4899,#f43f5e)"><i class="bi bi-gem"></i></div>
+                    <h5 class="service-title">Dental Implants</h5>
+                    <p class="service-desc">Permanent, natural-looking tooth replacements that restore your smile and confidence.</p>
+                    <a href="{% url 'book_appointment' %}" class="service-link">Book Now <i class="bi bi-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                <div class="service-card">
+                    <div class="service-icon" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)"><i class="bi bi-person-hearts"></i></div>
+                    <h5 class="service-title">Pediatric Dentistry</h5>
+                    <p class="service-desc">Gentle, child-friendly dental care in a fun environment that kids actually enjoy visiting.</p>
+                    <a href="{% url 'book_appointment' %}" class="service-link">Book Now <i class="bi bi-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ===== WHY CHOOSE US ===== -->
+<section class="why-section py-5">
+    <div class="container py-4">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="section-badge mb-3">Why Choose Us</div>
+                <h2 class="section-title">The SmileCare <span class="text-gradient">Difference</span></h2>
+                <p class="text-muted mt-3">We stand out from other dental clinics with our commitment to excellence, patient comfort, and use of the latest technology.</p>
+                <div class="why-cards mt-4">
+                    <div class="why-card">
+                        <div class="why-icon"><i class="bi bi-award-fill"></i></div>
+                        <div>
+                            <h6 class="mb-1 fw-semibold">Award-Winning Care</h6>
+                            <p class="text-muted small mb-0">Recognized as the best dental clinic in the region for 5 consecutive years.</p>
+                        </div>
+                    </div>
+                    <div class="why-card">
+                        <div class="why-icon" style="background:#f0fdf4"><i class="bi bi-shield-fill-check text-success"></i></div>
+                        <div>
+                            <h6 class="mb-1 fw-semibold">100% Safe & Sterile</h6>
+                            <p class="text-muted small mb-0">We follow strict sterilization protocols exceeding international standards.</p>
+                        </div>
+                    </div>
+                    <div class="why-card">
+                        <div class="why-icon" style="background:#fef3c7"><i class="bi bi-clock-fill text-warning"></i></div>
+                        <div>
+                            <h6 class="mb-1 fw-semibold">On-Time Appointments</h6>
+                            <p class="text-muted small mb-0">We respect your time. No long waiting rooms or delays.</p>
+                        </div>
+                    </div>
+                    <div class="why-card">
+                        <div class="why-icon" style="background:#fce7f3"><i class="bi bi-currency-rupee text-pink" style="color:#ec4899"></i></div>
+                        <div>
+                            <h6 class="mb-1 fw-semibold">Affordable Pricing</h6>
+                            <p class="text-muted small mb-0">Quality dental care that fits your budget with flexible payment options.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="why-cta-card">
+                    <div class="text-center py-4">
+                        <div class="cta-icon mb-3"><i class="bi bi-calendar2-heart-fill"></i></div>
+                        <h3 class="text-white fw-bold mb-2">Ready for a Brighter Smile?</h3>
+                        <p class="text-white-75 mb-4">Book your appointment today and get a free initial consultation worth ₹500.</p>
+                        <a href="{% url 'book_appointment' %}" class="btn btn-white btn-lg px-5">
+                            <i class="bi bi-calendar-plus me-2"></i>Book Now - It's Free!
+                        </a>
+                        <div class="mt-3 d-flex justify-content-center gap-4">
+                            <div class="text-center">
+                                <div class="text-white fw-bold">₹0</div>
+                                <div class="text-white-50 small">Booking Fee</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-white fw-bold">2 Min</div>
+                                <div class="text-white-50 small">To Book</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-white fw-bold">24/7</div>
+                                <div class="text-white-50 small">Online</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== DOCTORS SECTION ===== -->
+<section class="doctors-section py-5" id="doctors">
+    <div class="container py-4">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <div class="section-badge mx-auto mb-3">Our Experts</div>
+            <h2 class="section-title">Meet Our <span class="text-gradient">Specialist Doctors</span></h2>
+            <p class="text-muted">Our team of experienced dentists are dedicated to providing exceptional care.</p>
+        </div>
+        <div class="row g-4">
+            {% for doctor in doctors %}
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}00">
+                <div class="doctor-card">
+                    <div class="doctor-img-wrap">
+                        {% if doctor.image %}
+                            <img src="{{ doctor.image.url }}" alt="Dr. {{ doctor.name }}" class="doctor-img">
+                        {% else %}
+                            <div class="doctor-img-placeholder">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+                        {% endif %}
+                        <div class="doctor-available-badge">
+                            <i class="bi bi-circle-fill text-success me-1" style="font-size:8px"></i>Available
+                        </div>
+                    </div>
+                    <div class="doctor-body">
+                        <h5 class="doctor-name">Dr. {{ doctor.name }}</h5>
+                        <p class="doctor-spec">{{ doctor.specialization }}</p>
+                        <div class="doctor-meta d-flex justify-content-between align-items-center mt-2">
+                            <span class="meta-item"><i class="bi bi-briefcase-fill me-1 text-primary"></i>{{ doctor.experience }} yrs exp</span>
+                            <span class="meta-item"><i class="bi bi-star-fill me-1 text-warning"></i>4.9</span>
+                        </div>
+                        {% if doctor.qualification %}
+                        <p class="doctor-qual">{{ doctor.qualification }}</p>
+                        {% endif %}
+                        <div class="doctor-actions mt-3 d-flex gap-2">
+                            <a href="{% url 'doctor_detail' doctor.pk %}" class="btn btn-outline-primary btn-sm flex-fill">View Profile</a>
+                            <a href="{% url 'book_appointment' %}?doctor={{ doctor.pk }}" class="btn btn-primary btn-sm flex-fill">Book</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <div class="empty-state py-5">
+                    <i class="bi bi-person-x display-1 text-muted"></i>
+                    <h5 class="mt-3 text-muted">No doctors added yet</h5>
+                    <p class="text-muted">Check back soon or contact us directly.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% if doctors %}
+        <div class="text-center mt-4">
+            <a href="{% url 'doctors_list' %}" class="btn btn-outline-primary btn-lg">
+                View All Doctors <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="testimonials-section py-5">
+    <div class="container py-4">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <div class="section-badge mx-auto mb-3">Testimonials</div>
+            <h2 class="section-title">What Our <span class="text-gradient">Patients Say</span></h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4" data-aos="fade-up">
+                <div class="testimonial-card">
+                    <div class="stars mb-3">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                    </div>
+                    <p class="testimonial-text">"Absolutely amazing experience! The staff is incredibly friendly and the treatment was painless. My teeth have never looked better!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">RS</div>
+                        <div>
+                            <div class="fw-semibold">Rahul Sharma</div>
+                            <div class="text-muted small">Teeth Whitening Patient</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="testimonial-card featured-testimonial">
+                    <div class="stars mb-3">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                    </div>
+                    <p class="testimonial-text">"I was terrified of the dentist, but SmileCare changed everything. The online booking was super easy and the treatment was professional."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background:#6366f1">PK</div>
+                        <div>
+                            <div class="fw-semibold">Priya Kapoor</div>
+                            <div class="text-muted small">Orthodontics Patient</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="testimonial-card">
+                    <div class="stars mb-3">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-half text-warning"></i>
+                    </div>
+                    <p class="testimonial-text">"Best dental clinic in the city. The doctors are highly skilled and the facility is spotlessly clean. I highly recommend SmileCare!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background:#10b981">AM</div>
+                        <div>
+                            <div class="fw-semibold">Arjun Mehta</div>
+                            <div class="text-muted small">Implant Patient</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== CONTACT SECTION ===== -->
+<section class="contact-section py-5" id="contact">
+    <div class="container py-4">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <div class="section-badge mx-auto mb-3">Contact Us</div>
+            <h2 class="section-title">Get In <span class="text-gradient">Touch</span></h2>
+            <p class="text-muted">We're here to answer your questions and schedule your visit.</p>
+        </div>
+        <div class="row g-4">
+            <!-- Contact Info Cards -->
+            <div class="col-lg-4">
+                <div class="row g-3">
+                    <div class="col-12" data-aos="fade-right">
+                        <div class="contact-card">
+                            <div class="contact-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                            <div>
+                                <h6 class="fw-semibold mb-1">Our Location</h6>
+                                <p class="text-muted small mb-0">123 Dental Street, Health City<br>HC 400001, India</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12" data-aos="fade-right" data-aos-delay="100">
+                        <div class="contact-card">
+                            <div class="contact-icon" style="background:#f0fdf4"><i class="bi bi-telephone-fill text-success"></i></div>
+                            <div>
+                                <h6 class="fw-semibold mb-1">Phone Number</h6>
+                                <p class="text-muted small mb-0">+91 98765 43210<br>+91 87654 32109</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12" data-aos="fade-right" data-aos-delay="200">
+                        <div class="contact-card">
+                            <div class="contact-icon" style="background:#fef3c7"><i class="bi bi-envelope-fill text-warning"></i></div>
+                            <div>
+                                <h6 class="fw-semibold mb-1">Email Address</h6>
+                                <p class="text-muted small mb-0">info@smilecaredental.com<br>booking@smilecaredental.com</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12" data-aos="fade-right" data-aos-delay="300">
+                        <div class="contact-card">
+                            <div class="contact-icon" style="background:#fce7f3"><i class="bi bi-clock-fill" style="color:#ec4899"></i></div>
+                            <div>
+                                <h6 class="fw-semibold mb-1">Working Hours</h6>
+                                <p class="text-muted small mb-0">Mon–Fri: 9:00 AM – 7:00 PM<br>Saturday: 9:00 AM – 3:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Google Map -->
+            <div class="col-lg-8" data-aos="fade-left">
+                <div class="map-container">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3769.0!2d72.8777!3d19.0760!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTnCsDA0JzMzLjYiTiA3MsKwNTInMzkuNyJF!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                        width="100%"
+                        height="400"
+                        style="border:0;border-radius:16px"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="SmileCare Dental Hospital Location">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== BOOK APPOINTMENT CTA ===== -->
+<section class="book-cta-section py-5">
+    <div class="container">
+        <div class="book-cta-card" data-aos="zoom-in">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h2 class="text-white fw-bold mb-2">Ready to Schedule Your Visit?</h2>
+                    <p class="text-white-75 mb-0">Book your appointment online in just 2 minutes. No phone calls needed!</p>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                    <a href="{% url 'book_appointment' %}" class="btn btn-white btn-lg px-5 fw-semibold">
+                        <i class="bi bi-calendar-plus me-2"></i>Book Appointment
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

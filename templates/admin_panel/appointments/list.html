@@ -1,0 +1,107 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Manage Appointments - Admin{% endblock %}
+{% block page_heading %}Appointments{% endblock %}
+{% block breadcrumb %}Manage Appointments{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">All Appointments <span class="badge bg-primary ms-2">{{ appointments.count }}</span></h5>
+    <a href="{% url 'book_appointment' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-2"></i>New Appointment
+    </a>
+</div>
+
+<!-- Filter Bar -->
+<div class="admin-table-card mb-4">
+    <div class="p-3">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small fw-medium mb-1">Search</label>
+                <input type="text" name="search" value="{{ search_query }}" class="form-control" placeholder="Search by ID, patient, doctor...">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-medium mb-1">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">All Status</option>
+                    {% for value, label in status_choices %}
+                    <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-medium mb-1">Date</label>
+                <input type="date" name="date" value="{{ date_filter }}" class="form-control">
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-fill">
+                    <i class="bi bi-search"></i>
+                </button>
+                {% if search_query or status_filter or date_filter %}
+                <a href="{% url 'admin_appointments' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x"></i>
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Appointments Table -->
+<div class="admin-table-card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-3">ID</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Date & Time</th>
+                    <th>Status</th>
+                    <th>Booked On</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for apt in appointments %}
+                <tr>
+                    <td class="ps-3">
+                        <code class="text-primary">{{ apt.appointment_id }}</code>
+                    </td>
+                    <td>
+                        <div class="fw-medium">{{ apt.patient_name }}</div>
+                        <small class="text-muted">{{ apt.patient_phone }}</small>
+                    </td>
+                    <td>
+                        <div class="fw-medium small">Dr. {{ apt.doctor.name }}</div>
+                        <small class="text-muted">{{ apt.doctor.specialization }}</small>
+                    </td>
+                    <td>
+                        <div class="fw-medium small">{{ apt.appointment_date|date:"d M Y" }}</div>
+                        <small class="text-muted">{{ apt.appointment_time|time:"g:i A" }}</small>
+                    </td>
+                    <td>
+                        <span class="badge {{ apt.get_status_badge_class }} px-3">
+                            {{ apt.get_status_display }}
+                        </span>
+                    </td>
+                    <td><small class="text-muted">{{ apt.created_at|date:"d M Y" }}</small></td>
+                    <td>
+                        <a href="{% url 'admin_appointment_detail' apt.appointment_id %}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-eye me-1"></i>Manage
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-5">
+                        <i class="bi bi-calendar-x display-4 text-muted d-block mb-2"></i>
+                        <span class="text-muted">No appointments found</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Appointment Confirmed - SmileCare Dental{% endblock %}
+
+{% block content %}
+<div class="py-5 min-vh-100 d-flex align-items-center" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7 col-md-9">
+                <!-- Success Card -->
+                <div class="success-card text-center">
+                    <div class="success-icon-wrap mb-4">
+                        <div class="success-icon-outer">
+                            <div class="success-icon-inner">
+                                <i class="bi bi-check-lg text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h2 class="fw-bold text-success mb-2">Appointment Booked Successfully!</h2>
+                    <p class="text-muted mb-4">Your dental appointment has been received. We'll confirm it shortly.</p>
+
+                    <!-- Appointment ID -->
+                    <div class="apt-id-badge mb-4">
+                        <div class="text-muted small mb-1">Your Appointment ID</div>
+                        <div class="apt-id-number">{{ appointment.appointment_id }}</div>
+                        <div class="text-muted small mt-1">Please save this ID for future reference</div>
+                    </div>
+
+                    <!-- Appointment Details Grid -->
+                    <div class="apt-details-grid">
+                        <div class="apt-detail-item">
+                            <div class="apt-detail-icon"><i class="bi bi-person-fill text-primary"></i></div>
+                            <div class="apt-detail-label">Patient Name</div>
+                            <div class="apt-detail-value">{{ appointment.patient_name }}</div>
+                        </div>
+                        <div class="apt-detail-item">
+                            <div class="apt-detail-icon"><i class="bi bi-person-badge-fill text-success"></i></div>
+                            <div class="apt-detail-label">Doctor</div>
+                            <div class="apt-detail-value">Dr. {{ appointment.doctor.name }}</div>
+                        </div>
+                        <div class="apt-detail-item">
+                            <div class="apt-detail-icon"><i class="bi bi-calendar-fill text-info"></i></div>
+                            <div class="apt-detail-label">Date</div>
+                            <div class="apt-detail-value">{{ appointment.appointment_date|date:"D, d M Y" }}</div>
+                        </div>
+                        <div class="apt-detail-item">
+                            <div class="apt-detail-icon"><i class="bi bi-clock-fill text-warning"></i></div>
+                            <div class="apt-detail-label">Time</div>
+                            <div class="apt-detail-value">{{ appointment.appointment_time|time:"g:i A" }}</div>
+                        </div>
+                        <div class="apt-detail-item">
+                            <div class="apt-detail-icon"><i class="bi bi-hospital-fill text-primary"></i></div>
+                            <div class="apt-detail-label">Specialization</div>
+                            <div class="apt-detail-value">{{ appointment.doctor.specialization }}</div>
+                        </div>
+                        <div class="apt-detail-item">
+                            <div class="apt-detail-icon"><i class="bi bi-flag-fill text-secondary"></i></div>
+                            <div class="apt-detail-label">Status</div>
+                            <div class="apt-detail-value">
+                                <span class="badge bg-warning text-dark px-3 py-2">Pending Approval</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Note -->
+                    <div class="alert alert-info border-0 text-start mt-4" style="background:#e0f2fe">
+                        <div class="d-flex gap-2">
+                            <i class="bi bi-info-circle-fill text-info mt-1"></i>
+                            <div>
+                                <strong>What's Next?</strong>
+                                <ul class="mb-0 mt-1 small">
+                                    <li>Our team will review and approve your appointment shortly.</li>
+                                    <li>You'll receive a confirmation at <strong>{{ appointment.patient_email }}</strong></li>
+                                    <li>Please arrive 10 minutes before your scheduled time.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex flex-wrap gap-3 justify-content-center mt-4">
+                        <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg px-4">
+                            <i class="bi bi-grid me-2"></i>View My Appointments
+                        </a>
+                        <a href="{% url 'book_appointment' %}" class="btn btn-outline-primary btn-lg px-4">
+                            <i class="bi bi-calendar-plus me-2"></i>Book Another
+                        </a>
+                        <a href="{% url 'home' %}" class="btn btn-light btn-lg px-4">
+                            <i class="bi bi-house me-2"></i>Go Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

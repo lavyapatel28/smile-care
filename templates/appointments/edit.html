@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Appointment - SmileCare Dental{% endblock %}
+
+{% block content %}
+<div class="page-hero-sm">
+    <div class="container">
+        <div class="row align-items-center py-4">
+            <div class="col">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-1">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-white-50">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}" class="text-white-50">Dashboard</a></li>
+                        <li class="breadcrumb-item text-white active">Edit Appointment</li>
+                    </ol>
+                </nav>
+                <h1 class="text-white fw-bold mb-0">Edit Appointment</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="booking-form-card">
+                    <div class="booking-form-header">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        <h4 class="mb-0 fw-semibold">Edit Appointment — {{ appointment.appointment_id }}</h4>
+                    </div>
+                    <div class="booking-form-body">
+                        <div class="alert alert-warning border-0 mb-4">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            You can only edit pending appointments. Changes will reset the approval status.
+                        </div>
+
+                        <form method="post" id="editForm">
+                            {% csrf_token %}
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label fw-medium">Doctor</label>
+                                    {{ form.doctor }}
+                                    {% if form.doctor.errors %}<div class="invalid-feedback d-block">{{ form.doctor.errors|join:", " }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Appointment Date</label>
+                                    {{ form.appointment_date }}
+                                    {% if form.appointment_date.errors %}<div class="invalid-feedback d-block">{{ form.appointment_date.errors|join:", " }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Time Slot</label>
+                                    {{ form.appointment_time }}
+                                    {% if form.appointment_time.errors %}<div class="invalid-feedback d-block">{{ form.appointment_time.errors|join:", " }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Full Name</label>
+                                    {{ form.patient_name }}
+                                    {% if form.patient_name.errors %}<div class="invalid-feedback d-block">{{ form.patient_name.errors|join:", " }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Email</label>
+                                    {{ form.patient_email }}
+                                    {% if form.patient_email.errors %}<div class="invalid-feedback d-block">{{ form.patient_email.errors|join:", " }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-medium">Phone</label>
+                                    {{ form.patient_phone }}
+                                    {% if form.patient_phone.errors %}<div class="invalid-feedback d-block">{{ form.patient_phone.errors|join:", " }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-medium">Age</label>
+                                    {{ form.patient_age }}
+                                    {% if form.patient_age.errors %}<div class="invalid-feedback d-block">{{ form.patient_age.errors|join:", " }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-medium">Gender</label>
+                                    {{ form.patient_gender }}
+                                    {% if form.patient_gender.errors %}<div class="invalid-feedback d-block">{{ form.patient_gender.errors|join:", " }}</div>{% endif %}
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-medium">Reason for Visit</label>
+                                    {{ form.reason }}
+                                    {% if form.reason.errors %}<div class="invalid-feedback d-block">{{ form.reason.errors|join:", " }}</div>{% endif %}
+                                </div>
+                                {% if form.non_field_errors %}
+                                <div class="col-12">
+                                    <div class="alert alert-danger">{{ form.non_field_errors|join:", " }}</div>
+                                </div>
+                                {% endif %}
+                                <div class="col-12 d-flex gap-2 justify-content-end mt-2">
+                                    <a href="{% url 'appointment_detail' appointment.appointment_id %}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-x me-2"></i>Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="bi bi-check-lg me-2"></i>Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const SLOTS_URL = "{% url 'get_available_slots' %}";
+const doctorSelect = document.getElementById('id_doctor');
+const dateInput = document.getElementById('id_appointment_date');
+const timeSelect = document.getElementById('id_appointment_time');
+
+async function loadAvailableSlots() {
+    const doctorId = doctorSelect.value;
+    const date = dateInput.value;
+    if (!doctorId || !date) return;
+
+    const currentVal = timeSelect.value;
+    try {
+        const response = await fetch(`${SLOTS_URL}?doctor_id=${doctorId}&date=${date}`);
+        const data = await response.json();
+
+        if (data.success && data.slots.length > 0) {
+            timeSelect.innerHTML = '<option value="">-- Select Time Slot --</option>';
+            data.slots.forEach(slot => {
+                const option = document.createElement('option');
+                option.value = slot.value;
+                if (slot.is_booked && slot.value !== currentVal) {
+                    option.textContent = slot.display + ' (Already Booked)';
+                    option.disabled = true;
+                    option.classList.add('text-muted');
+                } else {
+                    option.textContent = slot.display;
+                }
+                timeSelect.appendChild(option);
+            });
+            if (currentVal) {
+                timeSelect.value = currentVal;
+            }
+        }
+    } catch (e) {
+        console.error('Failed to load slots:', e);
+    }
+}
+
+if (doctorSelect && dateInput) {
+    doctorSelect.addEventListener('change', loadAvailableSlots);
+    dateInput.addEventListener('change', loadAvailableSlots);
+    if (doctorSelect.value && dateInput.value) {
+        loadAvailableSlots();
+    }
+}
+</script>
+{% endblock %}

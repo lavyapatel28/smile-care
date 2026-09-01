@@ -1,0 +1,392 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Book Appointment - SmileCare Dental Hospital{% endblock %}
+
+{% block content %}
+<div class="page-hero-sm">
+    <div class="container">
+        <div class="row align-items-center py-4">
+            <div class="col">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-1">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-white-50">Home</a></li>
+                        <li class="breadcrumb-item text-white active">Book Appointment</li>
+                    </ol>
+                </nav>
+                <h1 class="text-white fw-bold mb-0">Book Your Appointment</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Booking Form -->
+            <div class="col-lg-8">
+                <div class="booking-form-card">
+                    <div class="booking-form-header">
+                        <i class="bi bi-calendar2-plus me-2"></i>
+                        <h4 class="mb-0 fw-semibold">Appointment Details</h4>
+                    </div>
+                    <div class="booking-form-body">
+                        <form method="post" id="bookingForm" novalidate>
+                            {% csrf_token %}
+
+                            <!-- Step 1: Choose Doctor -->
+                            <div class="form-section">
+                                <div class="form-section-header">
+                                    <div class="step-badge">1</div>
+                                    <h5 class="mb-0">Select Doctor</h5>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-medium" for="id_doctor">
+                                        <i class="bi bi-person-badge me-1 text-primary"></i>Choose a Doctor *
+                                    </label>
+                                    {{ form.doctor }}
+                                    {% if form.doctor.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.doctor.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                                <!-- Doctor info preview -->
+                                <div id="doctorInfoPreview" class="doctor-preview d-none">
+                                    <div class="d-flex align-items-center gap-3 p-3 bg-primary-soft rounded-3">
+                                        <div class="doctor-preview-avatar"><i class="bi bi-person-fill text-primary"></i></div>
+                                        <div>
+                                            <div class="fw-semibold" id="previewDoctorName">–</div>
+                                            <div class="text-muted small" id="previewDoctorSpec">–</div>
+                                            <div class="text-muted small" id="previewDoctorDays">
+                                                <i class="bi bi-calendar3 me-1"></i><span id="previewDaysText">–</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Choose Date & Time -->
+                            <div class="form-section">
+                                <div class="form-section-header">
+                                    <div class="step-badge">2</div>
+                                    <h5 class="mb-0">Select Date & Time</h5>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium" for="id_appointment_date">
+                                            <i class="bi bi-calendar3 me-1 text-primary"></i>Appointment Date *
+                                        </label>
+                                        {{ form.appointment_date }}
+                                        {% if form.appointment_date.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.appointment_date.errors|join:", " }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium" for="id_appointment_time">
+                                            <i class="bi bi-clock me-1 text-primary"></i>Available Time Slot *
+                                        </label>
+                                        <select name="appointment_time" id="id_appointment_time" class="form-select">
+                                            <option value="">-- Select Date First --</option>
+                                        </select>
+                                        <div id="slotsLoading" class="d-none mt-1">
+                                            <div class="d-flex align-items-center gap-2 text-muted small">
+                                                <div class="spinner-border spinner-border-sm text-primary"></div>
+                                                Loading available slots...
+                                            </div>
+                                        </div>
+                                        <div id="noSlotsMsg" class="d-none mt-1">
+                                            <small class="text-danger"><i class="bi bi-exclamation-circle me-1"></i>No available slots for this date.</small>
+                                        </div>
+                                        {% if form.appointment_time.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.appointment_time.errors|join:", " }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Patient Details -->
+                            <div class="form-section">
+                                <div class="form-section-header">
+                                    <div class="step-badge">3</div>
+                                    <h5 class="mb-0">Patient Information</h5>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium" for="id_patient_name">
+                                            <i class="bi bi-person me-1 text-primary"></i>Full Name *
+                                        </label>
+                                        {{ form.patient_name }}
+                                        {% if form.patient_name.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.patient_name.errors|join:", " }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium" for="id_patient_email">
+                                            <i class="bi bi-envelope me-1 text-primary"></i>Email Address *
+                                        </label>
+                                        {{ form.patient_email }}
+                                        {% if form.patient_email.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.patient_email.errors|join:", " }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-medium" for="id_patient_phone">
+                                            <i class="bi bi-telephone me-1 text-primary"></i>Phone Number *
+                                        </label>
+                                        {{ form.patient_phone }}
+                                        {% if form.patient_phone.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.patient_phone.errors|join:", " }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-medium" for="id_patient_age">
+                                            <i class="bi bi-person-badge me-1 text-primary"></i>Age *
+                                        </label>
+                                        {{ form.patient_age }}
+                                        {% if form.patient_age.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.patient_age.errors|join:", " }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-medium" for="id_patient_gender">
+                                            <i class="bi bi-gender-ambiguous me-1 text-primary"></i>Gender *
+                                        </label>
+                                        {{ form.patient_gender }}
+                                        {% if form.patient_gender.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.patient_gender.errors|join:", " }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label fw-medium" for="id_reason">
+                                            <i class="bi bi-chat-text me-1 text-primary"></i>Reason for Visit *
+                                        </label>
+                                        {{ form.reason }}
+                                        {% if form.reason.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.reason.errors|join:", " }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Non-field errors -->
+                            {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                <i class="bi bi-exclamation-triangle me-2"></i>{{ form.non_field_errors|join:", " }}
+                            </div>
+                            {% endif %}
+
+                            <!-- Submit -->
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg w-100 fw-semibold" id="bookBtn">
+                                    <i class="bi bi-calendar-check me-2"></i>Confirm Appointment Booking
+                                </button>
+                                <p class="text-center text-muted small mt-2">
+                                    <i class="bi bi-shield-check me-1 text-success"></i>
+                                    Your data is secure and protected. We'll confirm your appointment shortly.
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Info -->
+            <div class="col-lg-4">
+                <!-- How It Works -->
+                <div class="info-card mb-4">
+                    <h5 class="fw-semibold mb-3"><i class="bi bi-info-circle text-primary me-2"></i>How It Works</h5>
+                    <div class="how-steps">
+                        <div class="how-step">
+                            <div class="how-step-num">1</div>
+                            <div>
+                                <div class="fw-medium">Choose Your Doctor</div>
+                                <div class="text-muted small">Select from our specialist dentists</div>
+                            </div>
+                        </div>
+                        <div class="how-step">
+                            <div class="how-step-num">2</div>
+                            <div>
+                                <div class="fw-medium">Pick a Time Slot</div>
+                                <div class="text-muted small">Choose from available slots</div>
+                            </div>
+                        </div>
+                        <div class="how-step">
+                            <div class="how-step-num">3</div>
+                            <div>
+                                <div class="fw-medium">Enter Your Details</div>
+                                <div class="text-muted small">Fill in your information</div>
+                            </div>
+                        </div>
+                        <div class="how-step">
+                            <div class="how-step-num">4</div>
+                            <div>
+                                <div class="fw-medium">Get Confirmation</div>
+                                <div class="text-muted small">Receive your appointment ID</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Card -->
+                <div class="info-card">
+                    <h5 class="fw-semibold mb-3"><i class="bi bi-headset text-primary me-2"></i>Need Help?</h5>
+                    <p class="text-muted small mb-3">Our team is available to help you with any questions about appointments.</p>
+                    <div class="contact-mini">
+                        <i class="bi bi-telephone-fill text-primary me-2"></i>
+                        <span class="fw-medium">+91 98765 43210</span>
+                    </div>
+                    <div class="contact-mini mt-2">
+                        <i class="bi bi-envelope-fill text-primary me-2"></i>
+                        <span class="fw-medium">info@smilecaredental.com</span>
+                    </div>
+                    <div class="contact-mini mt-2">
+                        <i class="bi bi-clock-fill text-primary me-2"></i>
+                        <span class="fw-medium">Mon–Sat: 9AM – 7PM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// ---- Doctor schedule data (passed from view via AJAX) ----
+const SCHEDULE_URL = "{% url 'get_doctor_schedule' 0 %}".replace('/0/', '/');
+const SLOTS_URL = "{% url 'get_available_slots' %}";
+
+// Doctors data object for preview
+const doctorSelect = document.getElementById('id_doctor');
+const dateInput = document.getElementById('id_appointment_date');
+const timeSelect = document.getElementById('id_appointment_time');
+const slotsLoading = document.getElementById('slotsLoading');
+const noSlotsMsg = document.getElementById('noSlotsMsg');
+
+// Minimum date = today
+const today = new Date().toISOString().split('T')[0];
+dateInput.setAttribute('min', today);
+
+// Doctor selection → load schedule & working days
+async function loadDoctorSchedule(doctorId) {
+    const preview = document.getElementById('doctorInfoPreview');
+    if (!doctorId) {
+        preview.classList.add('d-none');
+        resetTimeSlots();
+        return;
+    }
+    try {
+        const response = await fetch(SCHEDULE_URL + doctorId + '/');
+        const data = await response.json();
+        if (data.success) {
+            // Show preview
+            preview.classList.remove('d-none');
+            document.getElementById('previewDoctorName').textContent = data.doctor_name;
+            // Store working days for date picker restriction
+            window._workingDays = data.working_days;
+            dateInput.value = '';
+            resetTimeSlots();
+            highlightWorkingDays();
+        }
+    } catch (e) {
+        console.error('Failed to load doctor schedule:', e);
+    }
+}
+
+// Restrict date picker to working days
+function highlightWorkingDays() {
+    dateInput.addEventListener('input', validateSelectedDay, { once: false });
+}
+
+function validateSelectedDay() {
+    const selectedDate = new Date(dateInput.value + 'T00:00:00');
+    const dayOfWeek = selectedDate.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+    // Convert: JS (0=Sun) vs Python (0=Mon)
+    const jsToPython = { 0: 6, 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5 };
+    const pythonDay = jsToPython[dayOfWeek];
+    const workingDays = window._workingDays || [];
+
+    if (workingDays.length > 0 && !workingDays.includes(pythonDay)) {
+        showToast('The selected doctor does not work on this day. Please choose a working day.', 'warning');
+        dateInput.value = '';
+        resetTimeSlots();
+        return;
+    }
+    loadAvailableSlots();
+}
+
+// Load available slots via AJAX
+async function loadAvailableSlots() {
+    const doctorId = doctorSelect.value;
+    const date = dateInput.value;
+    if (!doctorId || !date) return;
+
+    slotsLoading.classList.remove('d-none');
+    noSlotsMsg.classList.add('d-none');
+    resetTimeSlots();
+
+    try {
+        const response = await fetch(`${SLOTS_URL}?doctor_id=${doctorId}&date=${date}`);
+        const data = await response.json();
+        slotsLoading.classList.add('d-none');
+
+        if (data.success && data.slots.length > 0) {
+            // Populate time select
+            timeSelect.innerHTML = '<option value="">-- Select Time Slot --</option>';
+            data.slots.forEach(slot => {
+                const option = document.createElement('option');
+                option.value = slot.value;
+                if (slot.is_booked) {
+                    option.textContent = slot.display + ' (Already Booked)';
+                    option.disabled = true;
+                    option.classList.add('text-muted');
+                } else {
+                    option.textContent = slot.display;
+                }
+                timeSelect.appendChild(option);
+            });
+            if (data.count === 0) {
+                noSlotsMsg.classList.remove('d-none');
+                noSlotsMsg.querySelector('small').innerHTML = '<i class="bi bi-exclamation-circle me-1"></i>All slots for this date are already booked. Please select another date.';
+            }
+        } else {
+            noSlotsMsg.classList.remove('d-none');
+            timeSelect.innerHTML = '<option value="">-- No Slots Available --</option>';
+        }
+    } catch (e) {
+        slotsLoading.classList.add('d-none');
+        console.error('Failed to load slots:', e);
+    }
+}
+
+function resetTimeSlots() {
+    timeSelect.innerHTML = '<option value="">-- Select Date First --</option>';
+}
+
+// Attach events
+doctorSelect.addEventListener('change', function() {
+    loadDoctorSchedule(this.value);
+});
+dateInput.addEventListener('change', function() {
+    if (doctorSelect.value) {
+        validateSelectedDay();
+    }
+});
+
+// Pre-fill doctor if passed via URL param
+window.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const doctorParam = urlParams.get('doctor');
+    if (doctorParam && doctorSelect) {
+        doctorSelect.value = doctorParam;
+        loadDoctorSchedule(doctorParam);
+    }
+});
+
+// Form submission validation
+document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    const btn = document.getElementById('bookBtn');
+    btn.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div> Processing...';
+    btn.disabled = true;
+});
+</script>
+{% endblock %}

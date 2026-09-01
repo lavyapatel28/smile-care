@@ -1,0 +1,81 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Add Doctor - Admin{% endblock %}
+{% block page_heading %}Add New Doctor{% endblock %}
+{% block breadcrumb %}Doctors / Add New{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="admin-table-card">
+            <div class="card-header">
+                <i class="bi bi-person-plus text-primary me-2"></i>New Doctor Information
+            </div>
+            <div class="p-4">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Full Name *</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}<div class="invalid-feedback d-block">{{ form.name.errors|join:", " }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Specialization *</label>
+                            {{ form.specialization }}
+                            {% if form.specialization.errors %}<div class="invalid-feedback d-block">{{ form.specialization.errors|join:", " }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Qualification</label>
+                            {{ form.qualification }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-medium">Experience (years)</label>
+                            {{ form.experience }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-medium">Consultation Fee (₹)</label>
+                            {{ form.consultation_fee }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Phone</label>
+                            {{ form.phone }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Email</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-medium">Biography</label>
+                            {{ form.bio }}
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label fw-medium">Profile Photo</label>
+                            {{ form.image }}
+                            <div class="form-text">Recommended: Square image, 200×200px or larger.</div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-center">
+                            <div class="form-check">
+                                {{ form.is_available }}
+                                <label class="form-check-label fw-medium" for="{{ form.is_available.id_for_label }}">
+                                    Available for Appointments
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12 d-flex gap-2 justify-content-end mt-2">
+                            <a href="{% url 'admin_doctors' %}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-plus-lg me-2"></i>Add Doctor
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="alert alert-info mt-3 border-0">
+            <i class="bi bi-info-circle me-2"></i>
+            After adding the doctor, go to their edit page to set up their <strong>weekly schedule and available time slots</strong>.
+        </div>
+    </div>
+</div>
+{% endblock %}

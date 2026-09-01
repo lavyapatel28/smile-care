@@ -1,0 +1,157 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Edit Dr. {{ doctor.name }} - Admin{% endblock %}
+{% block page_heading %}Edit Doctor{% endblock %}
+{% block breadcrumb %}Doctors / Edit{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Doctor Form -->
+    <div class="col-lg-7">
+        <div class="admin-table-card mb-4">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-pencil-square text-primary"></i>
+                <span>Edit — Dr. {{ doctor.name }}</span>
+            </div>
+            <div class="p-4">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Full Name</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}<div class="invalid-feedback d-block">{{ form.name.errors|join:", " }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Specialization</label>
+                            {{ form.specialization }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Qualification</label>
+                            {{ form.qualification }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-medium">Experience (yrs)</label>
+                            {{ form.experience }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-medium">Fee (₹)</label>
+                            {{ form.consultation_fee }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Phone</label>
+                            {{ form.phone }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Email</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-medium">Biography</label>
+                            {{ form.bio }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-medium">Profile Photo</label>
+                            {% if doctor.image %}
+                            <div class="mb-2">
+                                <img src="{{ doctor.image.url }}" height="60" class="rounded-3 border me-2">
+                                <small class="text-muted">Current photo</small>
+                            </div>
+                            {% endif %}
+                            {{ form.image }}
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                {{ form.is_available }}
+                                <label class="form-check-label fw-medium">Available for Appointments</label>
+                            </div>
+                        </div>
+                        <div class="col-12 d-flex gap-2 justify-content-end">
+                            <a href="{% url 'admin_doctors' %}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-check-lg me-2"></i>Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Management -->
+    <div class="col-lg-5">
+        <div class="admin-table-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-clock text-success me-2"></i>Weekly Schedule</span>
+            </div>
+            <div class="p-3">
+                <!-- Existing Schedules -->
+                {% if schedules %}
+                <div class="mb-3">
+                    {% for sched in schedules %}
+                    <div class="schedule-item d-flex align-items-center justify-content-between p-2 mb-2 rounded-3"
+                         style="background:{% if sched.is_active %}#f0fdf4{% else %}#fef2f2{% endif %}">
+                        <div>
+                            <div class="fw-semibold small">{{ sched.day_of_week }}</div>
+                            <div class="text-muted" style="font-size:11px">
+                                {{ sched.start_time|time:"g:i A" }} – {{ sched.end_time|time:"g:i A" }}
+                                ({{ sched.slot_duration }} min slots)
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            {% if sched.is_active %}
+                                <span class="badge bg-success" style="font-size:10px">Active</span>
+                            {% else %}
+                                <span class="badge bg-danger" style="font-size:10px">Inactive</span>
+                            {% endif %}
+                            <a href="{% url 'admin_delete_schedule' sched.pk %}"
+                               class="btn btn-outline-danger btn-sm py-0 px-2"
+                               onclick="return confirm('Remove this schedule?')" title="Delete">
+                                <i class="bi bi-trash" style="font-size:11px"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-3 text-muted">
+                    <i class="bi bi-calendar-x fs-3"></i>
+                    <p class="small mt-2">No schedule set. Add working days below.</p>
+                </div>
+                {% endif %}
+
+                <!-- Add Schedule Form -->
+                <div class="border-top pt-3 mt-2">
+                    <h6 class="fw-semibold mb-2 small text-uppercase text-muted">Add Working Day</h6>
+                    <form method="post" action="{% url 'admin_add_schedule' doctor.pk %}">
+                        {% csrf_token %}
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <label class="form-label small fw-medium mb-1">Day of Week</label>
+                                {{ schedule_form.day_of_week }}
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-medium mb-1">Start Time</label>
+                                {{ schedule_form.start_time }}
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-medium mb-1">End Time</label>
+                                {{ schedule_form.end_time }}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-medium mb-1">Slot Duration</label>
+                                {{ schedule_form.slot_duration }}
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-success btn-sm w-100">
+                                    <i class="bi bi-plus-lg me-1"></i>Add Schedule
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
